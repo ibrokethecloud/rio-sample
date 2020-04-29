@@ -3,4 +3,8 @@ services:
     image: ./          # By giving image a relative path, it tells rio to use this as build context
     port: 8080/http    # defining ports to expose
     args:
-    - COLOR=white
+    - COLOR=pink
+    repo: https://github.com/ibrokethecloud/rio-sample
+    branch: master
+    cpus: 100m
+    memory: 100Mi
