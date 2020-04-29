@@ -4,7 +4,7 @@ COPY . /src/github.com/ibrokethecloud/rio-sample
 RUN cd /src/github.com/ibrokethecloud/rio-sample \
     && GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o /root/rio-sample
 
-## Using upstream aquasec kube-bench and layering it up
+## Using scratch
 FROM scratch
 ARG COLOR
 ENV COLOR=$COLOR

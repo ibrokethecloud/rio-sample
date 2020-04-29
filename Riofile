@@ -1,0 +1,6 @@
+services:
+  rio-sample:
+    image: ./          # By giving image a relative path, it tells rio to use this as build context
+    port: 8080/http    # defining ports to expose
+    args:
+    - COLOR=white

@@ -57,9 +57,13 @@ rio-sample    latest       localhost:5442/rio-system/rio-sample:latest
 ### Deploying a new service with Rio
 To launch a new service with Rio the following command is sufficient
 
-`rio run -p 8080 -n rio-sample localhost:5442/rio-system/rio-sample:white`
+`rio run -p 8080 -n rio-sample localhost:5442/default/rio-sample:white white`
 
 We can now view the status of the service using `rio ps`
+
+If you have public domain available for use with the rio service then it needs to be registered as:
+
+`rio domain register app.standalone.rio.fe.rancher.space rio-sample`
 
 Once the service is ready, the endpoint for the service can be viewed using `rio endpoints`
 
@@ -72,7 +76,7 @@ This can be accomplished as
 `rio build -t rio-sample:pink --build-arg COLOR=pink`
 
 Once the build is complete we can stage the image to the service.
-`rio stage --image localhost:5442/rio-system/rio-sample:pink rio-sample pink`
+`rio stage --image localhost:5442/default/rio-sample:pink rio-sample pink`
 
 Once the service is deployed, we can see the status using `rio ps`
 
