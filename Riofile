@@ -1,10 +1,12 @@
 services:
   rio-sample:
-    image: ./          # By giving image a relative path, it tells rio to use this as build context
+    imagePullPolicy: always
     port: 8080/http    # defining ports to expose
-    args:
-    - COLOR=pink
-    repo: https://github.com/ibrokethecloud/rio-sample
-    branch: master
+    build:
+      args:
+      - COLOR=pink
+      repo: https://github.com/ibrokethecloud/rio-sample
+      branch: master
+      stageOnly: true
     cpus: 100m
     memory: 100Mi

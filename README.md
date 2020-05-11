@@ -102,3 +102,17 @@ Rolling back to an old version of the app is as easy as setting the weight of th
 
 If the users are happy with the new service, the old service can be removed using *rm* command
 `rio rm rio-sample@white`
+
+### Autoscaling with Rio
+To enable autoscaling
+`rio scale rio-sample@pink=1-10`
+
+Run a workload against this by using something like `hey`
+
+```
+rio endpoint rio-sample --format '{{.Endpoints}}'
+
+hey -z 3m -c 20 ${RIOENDPOINT}
+
+watch rio ps
+```
