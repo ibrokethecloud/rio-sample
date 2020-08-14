@@ -1,12 +1,19 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
 	"strings"
+	"syscall"
+
+	"github.com/gorilla/mux"
+
+	"time"
 
 	"golang.org/x/net/context"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -14,6 +21,8 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 )
+
+var handleSig bool
 
 func handler(w http.ResponseWriter, r *http.Request) {
 	var bgColor string
@@ -33,9 +42,46 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "<html><body style=\"background-color:%s;\"><h1>Demo App</h1><p>Demo app running on node %s and cluster %s </p></body></html>", bgColor, nodeName, clusterName)
 }
 
+func healthCheck(w http.ResponseWriter, r *http.Request) {
+	if !handleSig {
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]bool{"ok": true})
+	} else {
+		w.WriteHeader(http.StatusGone)
+		json.NewEncoder(w).Encode(map[string]bool{"ok": false})
+	}
+}
 func main() {
-	http.HandleFunc("/", handler)
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	r := mux.NewRouter()
+	r.HandleFunc("/", handler)
+	r.HandleFunc("/health", healthCheck)
+	srv := &http.Server{
+		Addr:         "0.0.0.0:8080",
+		WriteTimeout: time.Second * 15,
+		ReadTimeout:  time.Second * 15,
+		IdleTimeout:  time.Second * 60,
+		Handler:      r,
+	}
+	go func() {
+		log.Fatal(srv.ListenAndServe())
+	}()
+
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, syscall.SIGTERM)
+
+	//Wait for sigterm
+	<-c
+
+	//Will cause healthcheck to unregister
+	handleSig = true
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(10*time.Second))
+	log.Println("SIGTERM received.. waiting 10 seconds before shutdown")
+	time.Sleep(10 * time.Second)
+	defer cancel()
+	srv.Shutdown(ctx)
+	log.Println("shutting down")
+	os.Exit(0)
 }
 
 func fetchDetails() (nodeName string, clusterName string, err error) {
