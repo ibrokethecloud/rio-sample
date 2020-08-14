@@ -1,0 +1,25 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: {{ .Release.namespace }}
+  name: demo-app-reader
+rules:
+- apiGroups: [""] 
+  resources: ["pods"]
+  verbs: ["get", "watch", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+# This role binding allows "jane" to read pods in the "default" namespace.
+# You need to already have a Role named "pod-reader" in that namespace.
+kind: RoleBinding
+metadata:
+  name: pod-reader-role
+  namespace: default
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: {{ .Release.namespace }}
+roleRef:
+  kind: Role
+  name: demo-app-reader
+  apiGroup: rbac.authorization.k8s.io

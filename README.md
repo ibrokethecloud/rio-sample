@@ -1,4 +1,4 @@
-# rio-sample is a sample app to show case
+ # rio-sample is a sample app to show case
 
 The sample app generates a static web page with a different background color.
 
