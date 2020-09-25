@@ -26,3 +26,4 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: demo-app-reader
+  namespace: {{ .Release.namespace }}
