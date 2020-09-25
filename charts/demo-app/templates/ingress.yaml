@@ -35,6 +35,7 @@ spec:
             backend:
               serviceName: {{ $fullName }}
               servicePort: http
+            pathType: ImplementationSpecific
         {{- end }}
   {{- end }}
 {{- end }}
