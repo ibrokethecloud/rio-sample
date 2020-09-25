@@ -1,0 +1,8 @@
+name: demo-app
+namespace: default
+targetCustomizations:
+- name: values
+  helm:
+    values:
+      image:
+        tag: blue
