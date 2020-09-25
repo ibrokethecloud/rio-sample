@@ -21,7 +21,8 @@ ingress:
   enabled: true
   annotations: {}
   hosts: 
-    - paths:
+    - host: '*'
+      paths:
         - /demo
 
 resources: {}
