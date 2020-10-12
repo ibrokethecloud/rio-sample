@@ -3,6 +3,7 @@ namespace: default
 targetCustomizations:
 - name: values
   helm:
+    releaseName: demo-app
     values:
       image:
         tag: blue
